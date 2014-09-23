@@ -29,47 +29,72 @@ phonesArray.forEach(function(phone){
 
 
 // the good stuff.
-function turnItOn(){
+function turnItOn(tabId){
 
+    // good god this sucks without promises.
+
+    // UA.
     chrome.debugger.sendCommand({
         tabId: tabId
     }, "Network.setUserAgentOverride",{
         userAgent : phones.GoogleNexus4.userAgent
     }, function() {
          console.log('useragent in place!', arguments);
-        // chrome.debugger.detach({tabId: tabId});
+
+
+        // set up device metrics
+        chrome.debugger.sendCommand({
+            tabId: tabId
+        }, "Page.setDeviceMetricsOverride",{
+            width:              phones.GoogleNexus4.width,
+            height:             phones.GoogleNexus4.height,
+            deviceScaleFactor:  phones.GoogleNexus4.deviceScaleFactor,
+            mobile:             phones.GoogleNexus4.mobile,
+            fitWindow: false
+        }, function() {
+             console.log('metrics!', arguments);
+
+
+            // reload page
+            chrome.debugger.sendCommand({
+                tabId: tabId
+            }, "Page.reload",{
+                ignoreCache : true
+            }, function() {
+                 console.log('reloaded!', arguments);
+                // chrome.debugger.detach({tabId: tabId});
+            });
+
+
+        });
+
+
     });
 
-
-    chrome.debugger.sendCommand({
-        tabId: tabId
-    }, "Page.setDeviceMetricsOverride",{
-        width:              phones.GoogleNexus4.width,
-        height:             phones.GoogleNexus4.height,
-        deviceScaleFactor:  phones.GoogleNexus4.deviceScaleFactor,
-        mobile:             phones.GoogleNexus4.mobile,
-        fitWindow: false
-    }, function() {
-         console.log('metrics!', arguments);
-        // chrome.debugger.detach({tabId: tabId});
-    });
-
-
-    chrome.debugger.sendCommand({
-        tabId: tabId
-    }, "Page.reload",{
-        ignoreCache : true
-    }, function() {
-         console.log('reloaded!', arguments);
-        // chrome.debugger.detach({tabId: tabId});
-    });
 }
 
 
-// this sets up the debugger. attached to all the things.
-function attachDebugger(tab) {
+function launchPopup(tab){
 
-    tabId = tab.id;
+    chrome.windows.create({
+        "width" :   phones.GoogleNexus4.width,
+        "height" :  phones.GoogleNexus4.height,
+        // "top" : 100,
+        // "left" : 100,
+        "type" : "popup",
+        "url" : tab.url}
+    , function(windows){
+
+        // use new tabID
+        attachDebugger(windows.tabs[0].id);
+
+    });
+
+}
+
+// this sets up the debugger. attached to all the things.
+function attachDebugger(tabId) {
+
 
     var protocolVersion = '1.1';
     chrome.debugger.attach({
@@ -89,8 +114,9 @@ function attachDebugger(tab) {
             chrome.debugger.sendCommand({
                 tabId: tabId
             }, "Page.enable", {}, function(response) {
+
                 // oh yeah
-                turnItOn();
+                turnItOn(tabId);
             });
 
 
@@ -104,9 +130,9 @@ chrome.runtime.onInstalled.addListener(function (details) {
     console.log('previousVersion', details.previousVersion);
 });
 
-chrome.browserAction.setBadgeText({text: '\'sup'});
+chrome.browserAction.setBadgeText({text: 'mobile'});
 
-chrome.browserAction.onClicked.addListener(attachDebugger);
+chrome.browserAction.onClicked.addListener(launchPopup);
 
 
 console.log('\'Allo \'Allo! Event Page for Browser Action');
