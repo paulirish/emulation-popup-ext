@@ -1,6 +1,8 @@
 
 'use strict';
 
+var tabId;
+
 // stolen from https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/devtools/front_end/toolbox/OverridesUI.js&q=%22Nexus%204%22&sq=package:chromium&type=cs&l=315
 var phonesArray = [
     {title: "Apple iPhone 4", width: 320, height: 480, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5", touch: true, mobile: true},
@@ -26,15 +28,48 @@ phonesArray.forEach(function(phone){
 // phones.GoogleNexus4.width , etc.
 
 
-chrome.runtime.onInstalled.addListener(function (details) {
-    console.log('previousVersion', details.previousVersion);
-});
+// the good stuff.
+function turnItOn(){
 
-chrome.browserAction.setBadgeText({text: '\'sup'});
+    chrome.debugger.sendCommand({
+        tabId: tabId
+    }, "Network.setUserAgentOverride",{
+        userAgent : phones.GoogleNexus4.userAgent
+    }, function() {
+         console.log('useragent in place!', arguments);
+        // chrome.debugger.detach({tabId: tabId});
+    });
 
-chrome.browserAction.onClicked.addListener(function (tab) {
 
-    var tabId = tab.id;
+    chrome.debugger.sendCommand({
+        tabId: tabId
+    }, "Page.setDeviceMetricsOverride",{
+        width:              phones.GoogleNexus4.width,
+        height:             phones.GoogleNexus4.height,
+        deviceScaleFactor:  phones.GoogleNexus4.deviceScaleFactor,
+        mobile:             phones.GoogleNexus4.mobile,
+        fitWindow: false
+    }, function() {
+         console.log('metrics!', arguments);
+        // chrome.debugger.detach({tabId: tabId});
+    });
+
+
+    chrome.debugger.sendCommand({
+        tabId: tabId
+    }, "Page.reload",{
+        ignoreCache : true
+    }, function() {
+         console.log('reloaded!', arguments);
+        // chrome.debugger.detach({tabId: tabId});
+    });
+}
+
+
+// this sets up the debugger. attached to all the things.
+function attachDebugger(tab) {
+
+    tabId = tab.id;
 
     var protocolVersion = '1.1';
     chrome.debugger.attach({
@@ -54,41 +89,8 @@ chrome.browserAction.onClicked.addListener(function (tab) {
             chrome.debugger.sendCommand({
                 tabId: tabId
             }, "Page.enable", {}, function(response) {
-
-
-                chrome.debugger.sendCommand({
-                    tabId: tabId
-                }, "Network.setUserAgentOverride",{
-                    userAgent : phones.GoogleNexus4.userAgent
-                }, function(response) {
-                     console.log('useragent in place!', arguments);
-                    // chrome.debugger.detach({tabId: tabId});
-                });
-
-
-                chrome.debugger.sendCommand({
-                    tabId: tabId
-                }, "Page.setDeviceMetricsOverride",{
-                    width:              phones.GoogleNexus4.width,
-                    height:             phones.GoogleNexus4.height,
-                    deviceScaleFactor:  phones.GoogleNexus4.deviceScaleFactor,
-                    mobile:             phones.GoogleNexus4.mobile,
-                    fitWindow: false
-                }, function(response) {
-                     console.log('metrics!', arguments);
-                    // chrome.debugger.detach({tabId: tabId});
-                });
-
-
-                chrome.debugger.sendCommand({
-                    tabId: tabId
-                }, "Page.reload",{
-                    ignoreCache : true
-                }, function(response) {
-                     console.log('reloaded!', arguments);
-                    // chrome.debugger.detach({tabId: tabId});
-                });
-
+                // oh yeah
+                turnItOn();
             });
 
 
@@ -96,7 +98,15 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     });
 
 
+}
+
+chrome.runtime.onInstalled.addListener(function (details) {
+    console.log('previousVersion', details.previousVersion);
 });
+
+chrome.browserAction.setBadgeText({text: '\'sup'});
+
+chrome.browserAction.onClicked.addListener(attachDebugger);
 
 
 console.log('\'Allo \'Allo! Event Page for Browser Action');
