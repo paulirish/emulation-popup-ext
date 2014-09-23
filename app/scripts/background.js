@@ -31,7 +31,7 @@ chrome.browserAction.onClicked.addListener(function (tab) {
                 width: 300,
                 height: 300,
                 deviceScaleFactor: 2,
-                emulateViewport : true,
+                mobile: true,
                 fitWindow: false
             }, function(response) {
                  console.log('metrics!', arguments);
