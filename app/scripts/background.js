@@ -50,7 +50,8 @@ function turnItOn(tabId){
             height:             phones.GoogleNexus4.height,
             deviceScaleFactor:  phones.GoogleNexus4.deviceScaleFactor,
             mobile:             phones.GoogleNexus4.mobile,
-            fitWindow: false
+            fitWindow: false,
+            emulateViewport: true
         }, function() {
              console.log('metrics!', arguments);
 
