@@ -16,8 +16,6 @@
     "undef": true,
     "unused": true,
     "strict": true,
-    "trailing": true,
-    "smarttabs": true,
     "globals" : {
         "chrome": true
     }
