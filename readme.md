@@ -3,6 +3,12 @@ device emulation chrome extension
 
 Click the little cute icon and you get a popup window with the same page, but now under Chrome DevTools device emulation. Emulating the UA, DPR, screen, and viewport settings. (No touch events yet, but they are trivial to add)
 
+You can instantly check whats going on. Or if you're developing with LiveReload you got two viewports updating simultaneously. Seems cool.
+
+<br>
+
+Let's nerd out.
+
 We're using chrome devtools' built-in device emulation via the extension API.
 
 If you've been wanting to use this emulation stuff via an extension or continuous integration setup, then you probably are interested in [how to use emulation via the debugging protocol](https://github.com/paulirish/emulation-popup-ext/blob/master/app/scripts/background.js#L32)
