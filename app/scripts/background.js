@@ -7,11 +7,11 @@ var tabId;
 var ver_detect= parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
 
 //Check if the detected Chrome version is less than the minimum Chrome version this extension was basically designed to support (ie Chrome Canary 39)
-var x= ver_detect < 39;
-console.log ('Detected Chrome Version: ', ver_detect , 'Less than Chrome Canary version 39: ', x);
+var olderVersionCheck = ver_detect < 39;
+console.log ('Detected Chrome Version: ', ver_detect , 'Less than Chrome Canary version 39: ', olderVersionCheck);
 
 // For versions less than 39 use emulateViewport and for version 39 use mobile.I don't have version 38 so don't know if it supports mobile (use emulateViewport for now)
-if(x)
+if(olderVersionCheck)
 {
 var phonesArray = [
     {title: "Apple iPhone 4", width: 320, height: 480, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5", touch: true, emulateViewport: true},
