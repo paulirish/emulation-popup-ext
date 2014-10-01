@@ -10,21 +10,6 @@ var ver_detect= parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2
 var olderVersionCheck = ver_detect < 39;
 console.log ('Detected Chrome Version: ', ver_detect , 'Less than Chrome Canary version 39: ', olderVersionCheck);
 
-// For versions less than 39 use emulateViewport and for version 39 use mobile.I don't have version 38 so don't know if it supports mobile (use emulateViewport for now)
-if(olderVersionCheck)
-{
-var phonesArray = [
-    {title: "Apple iPhone 4", width: 320, height: 480, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5", touch: true, emulateViewport: true},
-    {title: "Apple iPhone 5", width: 320, height: 568, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 7_0 like Mac OS X; en-us) AppleWebKit/537.51.1 (KHTML, like Gecko) Version/7.0 Mobile/11A465 Safari/9537.53", touch: true, emulateViewport: true},
-
-    {title: "Google Nexus 4", width: 384, height: 640, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 4 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19", touch: true, emulateViewport: true},
-    {title: "Google Nexus 5", width: 360, height: 640, deviceScaleFactor: 3, userAgent: "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19", touch: true, emulateViewport: true},
-    {title: "Google Nexus S", width: 320, height: 533, deviceScaleFactor: 1.5, userAgent: "Mozilla/5.0 (Linux; U; Android 2.3.4; en-us; Nexus S Build/GRJ22) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1", touch: true, emulateViewport: true}
-    ];
-}
-
-else
-{
 // stolen from https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/devtools/front_end/toolbox/OverridesUI.js&q=%22Nexus%204%22&sq=package:chromium&type=cs&l=315
 var phonesArray = [
     {title: "Apple iPhone 4", width: 320, height: 480, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5", touch: true, mobile: true},
@@ -34,7 +19,6 @@ var phonesArray = [
     {title: "Google Nexus 5", width: 360, height: 640, deviceScaleFactor: 3, userAgent: "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166 Mobile Safari/535.19", touch: true, mobile: true},
     {title: "Google Nexus S", width: 320, height: 533, deviceScaleFactor: 1.5, userAgent: "Mozilla/5.0 (Linux; U; Android 2.3.4; en-us; Nexus S Build/GRJ22) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1", touch: true, mobile: true}
     ];
-}
 
 var phones = {};
 phonesArray.forEach(function(phone){
@@ -73,7 +57,7 @@ function turnItOn(tabId){
             height:             phones.GoogleNexus4.height,
             deviceScaleFactor:  phones.GoogleNexus4.deviceScaleFactor,
             mobile:             phones.GoogleNexus4.mobile,
-            emulateViewport:    phones.GoogleNexus4.emulateViewport,
+            emulateViewport:    phones.GoogleNexus4.mobile,
             fitWindow: false
         }, function() {
              console.log('metrics!', arguments);
