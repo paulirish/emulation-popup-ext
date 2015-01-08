@@ -3,13 +3,6 @@
 
 var tabId;
 
-//Detect user's Chrome version
-var ver_detect= parseInt(navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)[2]);
-
-//Check if the detected Chrome version is less than the minimum Chrome version this extension was basically designed to support (ie Chrome Canary 39)
-var olderVersionCheck = ver_detect < 39;
-console.log ('Detected Chrome Version: ', ver_detect , 'Less than Chrome Canary version 39: ', olderVersionCheck);
-
 // stolen from https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/devtools/front_end/toolbox/OverridesUI.js&q=%22Nexus%204%22&sq=package:chromium&type=cs&l=315
 var phonesArray = [
     {title: "Apple iPhone 4", width: 320, height: 480, deviceScaleFactor: 2, userAgent: "Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_2_1 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8C148 Safari/6533.18.5", touch: true, mobile: true},
@@ -57,7 +50,6 @@ function turnItOn(tabId){
             height:             phones.GoogleNexus4.height,
             deviceScaleFactor:  phones.GoogleNexus4.deviceScaleFactor,
             mobile:             phones.GoogleNexus4.mobile,
-            emulateViewport:    phones.GoogleNexus4.mobile,
             fitWindow: false
         }, function() {
              console.log('metrics!', arguments);
