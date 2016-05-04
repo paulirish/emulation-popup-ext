@@ -1,7 +1,6 @@
-
 'use strict';
 
-var tabId;
+var tabId, popUrl;
 
 // stolen from https://code.google.com/p/chromium/codesearch#chromium/src/third_party/WebKit/Source/devtools/front_end/toolbox/OverridesUI.js&q=%22Nexus%204%22&sq=package:chromium&type=cs&l=315
 var phonesArray = [
@@ -41,7 +40,6 @@ function turnItOn(tabId){
     }, function() {
          console.log('useragent in place!', arguments);
 
-
         // set up device metrics
         chrome.debugger.sendCommand({
             tabId: tabId
@@ -54,17 +52,15 @@ function turnItOn(tabId){
         }, function() {
              console.log('metrics!', arguments);
 
-
             // reload page
             chrome.debugger.sendCommand({
                 tabId: tabId
-            }, "Page.reload",{
-                ignoreCache : true
+            }, "Page.navigate",{
+                url : popUrl
             }, function() {
-                 console.log('reloaded!', arguments);
+                 console.log('navigated!', arguments);
                 // chrome.debugger.detach({tabId: tabId});
             });
-
 
         });
 
@@ -75,26 +71,32 @@ function turnItOn(tabId){
 
 
 function launchPopup(tab){
-
     chrome.windows.create({
         "width" :   phones.GoogleNexus4.width,
         "height" :  phones.GoogleNexus4.height,
         // "top" : 100,
         // "left" : 100,
         "type" : "popup",
-        "url" : tab.url}
+        "url" : 'about:blank'}
     , function(windows){
 
-        // use new tabID
-        attachDebugger(windows.tabs[0].id);
+        //save the url we want to load in global for use later 
+        popUrl = tab.url;
 
+        // attach listener for when the tab in the new window loads.
+        var newTabId = windows.tabs[0].id;
+        chrome.tabs.onUpdated.addListener( function(updatedTabId, changeInfo, tab) {
+            if(updatedTabId===newTabId && changeInfo.status == "complete"){ 
+                // use new tabID
+                attachDebugger(newTabId);
+            }
+        } );
     });
 
 }
 
 // this sets up the debugger. attached to all the things.
 function attachDebugger(tabId) {
-
 
     var protocolVersion = '1.1';
     chrome.debugger.attach({
@@ -122,7 +124,6 @@ function attachDebugger(tabId) {
 
         });
     });
-
 
 }
 
