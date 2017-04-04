@@ -22,8 +22,8 @@
   },
   "permissions": [
     "tabs",
-    "http://*/*",
-    "https://*/*",
-    "debugger"
+    "https://drive.google.com/corp/drive/*",
+    "webRequest",
+    "webRequestBlocking"
   ]
 }
