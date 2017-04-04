@@ -22,7 +22,7 @@
   },
   "permissions": [
     "tabs",
-    "https://drive.google.com/corp/drive/*",
+    "https://drive.google.com/corp/drive/u/0/mobile/search",
     "webRequest",
     "webRequestBlocking"
   ]

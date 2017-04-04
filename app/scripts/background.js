@@ -34,10 +34,12 @@ function launchPopup() {
   enabled = true;
 
   chrome.windows.create({
+    url: driveSearchURL,
     height: height,
     width: width,
     type: 'popup',
-    url: driveSearchURL
+    focused: true
+
   }, function(windows) {
         // window started, but navigation not yet started
   });
